@@ -1,0 +1,46 @@
+{
+  "ultima_actualizacion": "2026-10-28 08:00:00 (Hora Mendoza)",
+  "total_activas": 4,
+  "licitaciones": [
+    {
+      "id": "lic-bol-101",
+      "origen": "boletin",
+      "code": "LIC-2026-MZA-0418",
+      "title": "Mantenimiento Integral de Redes Eléctricas y Transformadores",
+      "organismo": "Dirección Provincial de Energía - Gobierno de Mendoza",
+      "budget": "$12.5M",
+      "deadline": "3 días",
+      "followed": false
+    },
+    {
+      "id": "lic-bol-102",
+      "origen": "boletin",
+      "code": "LIC-2026-MZA-0391",
+      "title": "Modernización Energética y Paneles Solares en Edificios Públicos",
+      "organismo": "Ministerio de Planificación e Infraestructura Pública",
+      "budget": "$82.8M",
+      "deadline": "18 días",
+      "followed": true
+    },
+    {
+      "id": "lic-mun-201",
+      "origen": "municipalidad",
+      "code": "MUN-CIUDAD-2026-088",
+      "title": "Plataforma de Monitoreo Urbano, Sensores y Cámaras con Analítica",
+      "organismo": "Municipalidad de la Ciudad de Mendoza",
+      "budget": "$45.0M",
+      "deadline": "12 días",
+      "followed": false
+    },
+    {
+      "id": "lic-mun-202",
+      "origen": "municipalidad",
+      "code": "COMPRAR-MZA-2026-042",
+      "title": "Telegestión de Alumbrado Público LED Parque San Martín y Microcentro",
+      "organismo": "Municipalidad de Mendoza - Secretaría de Desarrollo Urbano",
+      "budget": "$18.4M",
+      "deadline": "5 días",
+      "followed": false
+    }
+  ]
+}

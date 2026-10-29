@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>blueplanet | Strategic Enterprise Operating System - Grupo Broda</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bp-blue-corp: #1d4ed8;
+      --bp-blue-hover: #1e40af;
+      --bp-blue-accent: #0284c7;
+      --bp-green-corp: #059669;
+      --bp-green-hover: #047857;
+      
+      --glass-bg: rgba(11, 19, 32, 0.44);
+      --glass-bg-hover: rgba(16, 26, 44, 0.58);
+      --glass-sidebar: rgba(8, 14, 25, 0.52);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --glass-border-subtle: rgba(255, 255, 255, 0.06);
+      --glass-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.18);
+      --glass-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6);
+
+      --blur-val: blur(28px) saturate(170%);
+      
+      --text-main: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --font-title: 'Plus Jakarta Sans', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+    body {
+      background-color: #020610;
+      font-family: var(--font-body);
+      color: var(--text-main);
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* FONDOS OFICIALES DE LOS PORTONES DEL PARQUE SAN MARTÍN */
+    .bg-mendoza-layer {
+      position: fixed;
+      inset: 0;
+      background-size: cover;
+      background-position: center 62%;
+      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 0;
+    }
+
+    .bg-night {
+      background-image: 
+        radial-gradient(circle at 50% 30%, rgba(3, 7, 18, 0.2) 0%, rgba(2, 6, 15, 0.75) 100%),
+        url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Portones_del_Parque_General_San_Martin_Mendoza_Argentina_-_panoramio.jpg/1920px-Portones_del_Parque_General_San_Martin_Mendoza_Argentina_-_panoramio.jpg');
+      opacity: 0;
+    }
+
+    .bg-day {
+      background-image: 
+        radial-gradient(circle at 50% 30%, rgba(15, 23, 42, 0.1) 0%, rgba(5, 12, 24, 0.55) 100%),
+        url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Mendoza_-_Park_gate.jpg/1920px-Mendoza_-_Park_gate.jpg');
+      filter: saturate(1.15) contrast(1.05) brightness(1.02);
+      opacity: 0;
+    }
+
+    .bg-cloudy {
+      background-image: 
+        radial-gradient(circle at 50% 30%, rgba(15, 23, 42, 0.35) 0%, rgba(4, 9, 20, 0.75) 100%),
+        url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Mendoza_-_Park_gate.jpg/1920px-Mendoza_-_Park_gate.jpg');
+      filter: saturate(0.35) brightness(0.82) contrast(1.1);
+      opacity: 0;
+    }
+
+    .bp-brand-header {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-title);
+      font-weight: 700;
+    }
+
+    .bp-circle-icon {
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1e3a8a 0%, #0d9488 50%, #059669 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(5, 150, 105, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+      flex-shrink: 0;
+    }
+
+    .bp-circle-icon svg {
+      fill: none;
+      stroke: #ffffff;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .bp-brand-text {
+      letter-spacing: -0.5px;
+      display: inline-flex;
+    }
+
+    .bp-brand-text .blue-part { color: #3b82f6; }
+    .bp-brand-text .green-part { color: #10b981; }
+
+    #view-login {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 45%, #051024 0%, #01040a 100%);
+      transition: opacity 0.7s ease, visibility 0.7s;
+      overflow: hidden;
+    }
+
+    #view-login.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .welcome-intro-card {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      z-index: 30;
+      top: 13%;
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .welcome-intro-card.exit {
+      opacity: 0;
+      transform: translateY(-40px) scale(0.96);
+      pointer-events: none;
+    }
+
+    .sub-tracking-label {
+      font-size: 0.75rem;
+      letter-spacing: 5px;
+      color: #94a3b8;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .btn-enter-stage {
+      margin-top: 12px;
+      padding: 14px 44px;
+      background: linear-gradient(135deg, #1d4ed8 0%, #0d9488 50%, #059669 100%);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 40px;
+      color: white;
+      font-family: var(--font-title);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(29, 78, 216, 0.35);
+      transition: all 0.25s;
+    }
+
+    .btn-enter-stage:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 35px rgba(5, 150, 105, 0.4);
+    }
+
+    .earth-stage-box {
+      position: absolute;
+      width: 680px;
+      height: 680px;
+      border-radius: 50%;
+      transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 10;
+    }
+
+    .earth-stage-box.pos-intro {
+      bottom: -340px;
+      left: calc(50% - 340px);
+      transform: scale(1.15);
+    }
+
+    .earth-stage-box.pos-login {
+      bottom: calc(50% - 340px);
+      left: 11%;
+      transform: scale(1.03);
+    }
+
+    .earth-header-text {
+      position: absolute;
+      top: -36px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      letter-spacing: 7px;
+      color: #38bdf8;
+      font-weight: 600;
+      opacity: 0.85;
+      text-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+    }
+
+    .blue-marble-earth {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: 
+        radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.22) 0%, transparent 45%),
+        url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/The_Blue_Marble_%28remastered%29.jpg/1200px-The_Blue_Marble_%28remastered%29.jpg');
+      background-size: cover;
+      background-position: center;
+      box-shadow: 
+        inset 0 0 80px rgba(0, 0, 0, 0.95),
+        inset -50px -50px 130px rgba(0, 0, 0, 0.95),
+        inset 30px 30px 80px rgba(56, 189, 248, 0.35),
+        0 0 90px rgba(29, 78, 216, 0.4),
+        0 0 160px rgba(13, 148, 136, 0.25);
+      animation: rotateEarthCycle 160s linear infinite;
+    }
+
+    @keyframes rotateEarthCycle {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .login-glass-card {
+      position: absolute;
+      right: 12%;
+      width: 430px;
+      padding: 42px 38px;
+      background: var(--glass-bg);
+      backdrop-filter: var(--blur-val);
+      -webkit-backdrop-filter: var(--blur-val);
+      border: 1px solid var(--glass-border);
+      border-radius: 26px;
+      box-shadow: var(--glass-shadow), var(--glass-highlight);
+      opacity: 0;
+      transform: translateX(60px);
+      transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.25s;
+      z-index: 25;
+    }
+
+    .login-glass-card.visible { opacity: 1; transform: translateX(0); }
+
+    .field-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .field-input-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .field-input-box svg {
+      position: absolute;
+      left: 15px;
+      width: 18px;
+      height: 18px;
+      stroke: var(--text-muted);
+    }
+
+    .field-input-box input, .field-input-box select {
+      width: 100%;
+      padding: 13px 16px 13px 44px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border-subtle);
+      border-radius: 12px;
+      color: white;
+      font-size: 0.92rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .field-input-box select { cursor: pointer; }
+    .field-input-box select option { background: #070d18; }
+    .field-input-box input:focus, .field-input-box select:focus { border-color: #3b82f6; }
+
+    .btn-exec-submit {
+      width: 100%;
+      padding: 15px;
+      background: var(--bp-blue-corp);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      color: white;
+      font-family: var(--font-title);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(29, 78, 216, 0.35);
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-exec-submit:hover { background: var(--bp-blue-hover); transform: translateY(-1px); }
+
+    #view-dashboard {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 265px 1fr;
+      z-index: 10;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.7s ease;
+    }
+
+    #view-dashboard.active { opacity: 1; visibility: visible; }
+
+    .glass-sidebar {
+      background: var(--glass-sidebar);
+      backdrop-filter: var(--blur-val);
+      -webkit-backdrop-filter: var(--blur-val);
+      border-right: 1px solid var(--glass-border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px 18px;
+    }
+
+    .sidebar-category-tag {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--text-dim);
+      padding: 10px 12px 6px;
+      text-transform: uppercase;
+    }
+
+    .sidebar-menu-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-btn svg { width: 18px; height: 18px; stroke-width: 1.75; }
+
+    .nav-btn:hover { background: rgba(255, 255, 255, 0.06); color: white; }
+
+    .nav-btn.active {
+      background: rgba(37, 99, 235, 0.18);
+      color: #93c5fd;
+      border-left: 3px solid #3b82f6;
+    }
+
+    .pill-badge {
+      margin-left: auto;
+      background: var(--bp-blue-corp);
+      color: white;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 12px;
+    }
+
+    .nav-btn.special-ai { color: #34d399; font-weight: 600; }
+
+    .sidebar-user-pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--glass-border-subtle);
+      border-radius: 14px;
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      cursor: pointer;
+    }
+
+    .avatar-icon-box {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: white;
+      background: #1e3a8a;
+    }
+
+    .main-scrollable-content {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 26px 36px 36px;
+      gap: 22px;
+    }
+
+    .header-bar-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .greeting-area h1 {
+      font-family: var(--font-title);
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+
+    .greeting-area p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .top-controls-dock {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .climate-toggle-dock {
+      display: flex;
+      background: rgba(11, 19, 32, 0.45);
+      backdrop-filter: var(--blur-val);
+      border: 1px solid var(--glass-border);
+      border-radius: 30px;
+      padding: 3px;
+    }
+
+    .btn-scene-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-scene-toggle svg { width: 14px; height: 14px; stroke-width: 1.75; }
+
+    .btn-scene-toggle.active {
+      background: rgba(255, 255, 255, 0.14);
+      color: white;
+    }
+
+    .btn-scene-toggle.auto-btn { color: #38bdf8; }
+
+    .clock-display-badge { text-align: right; }
+    .clock-display-badge .clock-value { font-family: var(--font-title); font-size: 1.35rem; font-weight: 800; }
+    .clock-display-badge .clock-sub { font-size: 0.68rem; letter-spacing: 1.2px; color: var(--text-muted); font-weight: 600; }
+
+    .glass-cards-grid {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 20px;
+    }
+
+    .glass-panel {
+      background: var(--glass-bg);
+      backdrop-filter: var(--blur-val);
+      -webkit-backdrop-filter: var(--blur-val);
+      border: 1px solid var(--glass-border);
+      border-radius: 22px;
+      box-shadow: var(--glass-shadow), var(--glass-highlight);
+      padding: 24px 26px;
+    }
+
+    .glass-panel:hover {
+      background: var(--glass-bg-hover);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .panel-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .panel-heading { font-family: var(--font-title); font-size: 1.15rem; font-weight: 700; }
+
+    .weather-widget-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .weather-temp-heading { font-family: var(--font-title); font-size: 2.1rem; font-weight: 800; margin: 10px 0 4px; }
+
+    .air-quality-badge-box {
+      background: rgba(11, 19, 32, 0.5);
+      border: 1px solid var(--glass-border-subtle);
+      border-radius: 14px;
+      padding: 12px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .air-bar-track { width: 100%; height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.1); overflow: hidden; }
+    .air-bar-fill { width: 90%; height: 100%; background: var(--bp-green-corp); }
+
+    .weather-metric-chips { display: flex; gap: 10px; margin-top: 18px; }
+
+    .metric-chip {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border-subtle);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+
+    .metric-chip svg { width: 14px; height: 14px; stroke-width: 1.75; }
+
+    .project-meter-line { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .meter-info { display: flex; justify-content: space-between; font-size: 0.86rem; font-weight: 600; }
+    .progress-bar-track { width: 100%; height: 7px; border-radius: 8px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 8px; transition: width 0.8s ease; }
+
+    .tenders-scroll-box {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 250px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .tender-item-strip {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--glass-border-subtle);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      transition: all 0.2s;
+    }
+
+    .tender-item-strip:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .action-icon-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--glass-border-subtle);
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.15s;
+    }
+
+    .action-icon-btn svg { width: 14px; height: 14px; stroke-width: 1.75; }
+    .action-icon-btn:hover { background: rgba(255, 255, 255, 0.12); color: white; }
+    .action-icon-btn.active-follow { background: var(--bp-blue-corp); color: white; border-color: var(--bp-blue-corp); }
+    .action-icon-btn.dismiss-btn:hover { background: rgba(220, 38, 38, 0.2); color: #ef4444; }
+
+    .view-container-pane {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+      animation: fadeInFast 0.3s ease;
+    }
+
+    .view-container-pane.active { display: flex; }
+    @keyframes fadeInFast { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .modal-backdrop-veil {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 16, 0.85);
+      backdrop-filter: blur(14px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-backdrop-veil.active { display: flex; }
+
+    .modal-box-card {
+      background: rgba(11, 19, 32, 0.9);
+      border: 1px solid var(--glass-border);
+      border-radius: 22px;
+      width: 580px;
+      padding: 34px;
+      box-shadow: var(--glass-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .waveform-visualizer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      height: 40px;
+    }
+
+    .wave-line {
+      width: 4px;
+      height: 10px;
+      background: #0284c7;
+      border-radius: 6px;
+      animation: barBounce 1.2s infinite ease-in-out;
+    }
+
+    .wave-line:nth-child(2) { animation-delay: 0.2s; height: 28px; background: #059669; }
+    .wave-line:nth-child(3) { animation-delay: 0.4s; height: 36px; background: #1d4ed8; }
+    .wave-line:nth-child(4) { animation-delay: 0.1s; height: 22px; background: #0284c7; }
+    .wave-line:nth-child(5) { animation-delay: 0.3s; height: 14px; background: #059669; }
+
+    @keyframes barBounce { 0%, 100% { transform: scaleY(0.4); } 50% { transform: scaleY(1.3); } }
+
+    .system-toast-dock {
+      position: fixed;
+      top: 22px;
+      right: 28px;
+      background: rgba(11, 19, 32, 0.92);
+      border: 1px solid var(--bp-blue-corp);
+      backdrop-filter: blur(20px);
+      padding: 14px 20px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 2000;
+      transform: translateY(-80px);
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .system-toast-dock.active { transform: translateY(0); opacity: 1; }
+
+    .float-talker-trigger {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1d4ed8 0%, #0d9488 100%);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 4px 25px rgba(29, 78, 216, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 90;
+      transition: transform 0.2s;
+    }
+
+    .float-talker-trigger svg { width: 22px; height: 22px; stroke: #ffffff; stroke-width: 1.75; }
+    .float-talker-trigger:hover { transform: scale(1.08); }
+  </style>
+</head>
+<body>
+
+  <div id="mendoza-bg-night" class="bg-mendoza-layer bg-night"></div>
+  <div id="mendoza-bg-day" class="bg-mendoza-layer bg-day"></div>
+  <div id="mendoza-bg-cloudy" class="bg-mendoza-layer bg-cloudy"></div>
+
+  <div id="live-toast-box" class="system-toast-dock">
+    <div style="width:8px; height:8px; border-radius:50%; background:#38bdf8;"></div>
+    <div>
+      <div style="font-weight:700; font-size:0.85rem;" id="toast-title-text">Sistema Operativo</div>
+      <div style="font-size:0.75rem; color:var(--text-secondary);" id="toast-body-text">Conexión establecida</div>
+    </div>
+  </div>
+
+  <div id="view-login">
+    <div id="intro-welcome-card" class="welcome-intro-card">
+      <div class="bp-brand-header">
+        <div class="bp-circle-icon" style="width: 72px; height: 72px;">
+          <svg viewBox="0 0 24 24" style="width: 40px; height: 40px;">
+            <path d="M12 4c0 0-4 4.5-4 9.5a4 4 0 0 0 8 0c0-5-4-9.5-4-9.5z" stroke-width="1.75"/>
+            <path d="M12 7v9" stroke-width="1.75"/>
+            <path d="M12 10.5l-2.5 2" stroke-width="1.75"/>
+            <path d="M12 12.5l2.5 2" stroke-width="1.75"/>
+          </svg>
+        </div>
+        <div class="bp-brand-text" style="font-size: 3.8rem; font-weight: 800;">
+          <span class="blue-part">blue</span><span class="green-part">planet</span>
+        </div>
+      </div>
+      <div class="sub-tracking-label">EARTH &bull; STRATEGIC &bull; OS</div>
+      <button class="btn-enter-stage" onclick="enterSystemStage()">ENTRAR AL SISTEMA</button>
+    </div>
+
+    <div id="earth-actor-box" class="earth-stage-box pos-intro">
+      <div class="earth-header-text">E A R T H</div>
+      <div class="blue-marble-earth"></div>
+    </div>
+
+    <div id="login-form-panel" class="login-glass-card">
+      <div class="bp-brand-header" style="margin-bottom: 22px;">
+        <div class="bp-circle-icon" style="width: 34px; height: 34px;">
+          <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M12 4c0 0-4 4.5-4 9.5a4 4 0 0 0 8 0c0-5-4-9.5-4-9.5z" stroke-width="1.75"/><path d="M12 7v9" stroke-width="1.75"/></svg>
+        </div>
+        <div class="bp-brand-text" style="font-size: 1.45rem; font-weight: 800;"><span class="blue-part">blue</span><span class="green-part">planet</span></div>
+      </div>
+
+      <h2 style="font-family:var(--font-title); font-size: 1.9rem; font-weight: 800; margin-bottom: 4px;">Log in</h2>
+      <p style="color:var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">Bienvenido de vuelta a BluePlanet OS</p>
+
+      <form onsubmit="handleAuthSubmit(event)">
+        <label class="field-label">Usuario</label>
+        <div class="field-input-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+          <select id="user-select-field">
+            <option value="joaquin">Joaquín (Dueño Grupo Broda)</option>
+            <option value="ron">Ron Broda (Project Manager)</option>
+            <option value="pamela">Pamela (Bienes Raíces)</option>
+            <option value="agustina">Agustina (Analista de Proyectos)</option>
+            <option value="raul">Raúl (Project Manager Smart City)</option>
+          </select>
+        </div>
+
+        <label class="field-label">Contraseña</label>
+        <div class="field-input-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" value="••••••••••••">
+        </div>
+
+        <button type="submit" class="btn-exec-submit">INGRESAR</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="view-dashboard">
+    <aside class="glass-sidebar">
+      <div>
+        <div class="bp-brand-header" style="margin-bottom: 26px; padding-left: 4px;">
+          <div class="bp-circle-icon" style="width: 32px; height: 32px;">
+            <svg viewBox="0 0 24 24" style="width: 18px; height: 18px;"><path d="M12 4c0 0-4 4.5-4 9.5a4 4 0 0 0 8 0c0-5-4-9.5-4-9.5z" stroke-width="1.75"/><path d="M12 7v9" stroke-width="1.75"/></svg>
+          </div>
+          <div class="bp-brand-text" style="font-size: 1.35rem; font-weight: 800;"><span class="blue-part">blue</span><span class="green-part">planet</span></div>
+        </div>
+
+        <div class="sidebar-category-tag">Navegación</div>
+        <ul class="sidebar-menu-list">
+          <li class="nav-btn active" onclick="switchMainPane('dashboard', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span>Dashboard</span>
+          </li>
+          <li class="nav-btn" onclick="switchMainPane('proyectos', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            <span>Proyectos</span>
+          </li>
+          <li class="nav-btn" onclick="switchMainPane('avance', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/></svg>
+            <span>Avance Individual</span>
+          </li>
+          <li class="nav-btn" onclick="switchMainPane('archivos', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <span>Archivos & Datos</span>
+          </li>
+        </ul>
+
+        <div class="sidebar-category-tag" style="margin-top: 14px;">Licitaciones</div>
+        <ul class="sidebar-menu-list">
+          <li class="nav-btn" onclick="switchMainPane('boletin', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <span>Boletín Oficial</span>
+            <span class="pill-badge" id="boletin-count-badge">2</span>
+          </li>
+          <li class="nav-btn" onclick="switchMainPane('municipalidad', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 10h1v2H9zm0 4h1v2H9zm6-4h1v2h-1zm0 4h1v2h-1z"/></svg>
+            <span>Municipalidad</span>
+            <span class="pill-badge" id="muni-count-badge">2</span>
+          </li>
+        </ul>
+
+        <div class="sidebar-category-tag" style="margin-top: 14px;">Herramientas & Integración</div>
+        <ul class="sidebar-menu-list">
+          <li class="nav-btn" onclick="switchMainPane('teams', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span>Calendario Teams</span>
+          </li>
+          <li class="nav-btn" onclick="switchMainPane('correos', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <span>Correos</span>
+            <span class="pill-badge">5</span>
+          </li>
+          <li class="nav-btn special-ai" onclick="openTalkerModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+            <span>BLUE TALKER (Comandos)</span>
+          </li>
+          <li class="nav-btn special-ai" onclick="switchMainPane('ai-chat', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="m10 15 5-3-5-3v6Z"/></svg>
+            <span>BLUE AI (Claude / Groq)</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-user-pill" onclick="openUserSelectionPrompt()">
+        <div class="avatar-icon-box" id="avatar-circle-display">JB</div>
+        <div style="flex:1; overflow:hidden;">
+          <div style="font-weight:700; font-size:0.86rem;" id="user-display-name">Joaquín</div>
+          <div style="font-size:0.7rem; color:var(--text-dim);" id="user-display-role">Dueño Grupo Broda</div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-scrollable-content">
+      <header class="header-bar-row">
+        <div class="greeting-area">
+          <h1 id="dyn-greeting-title">Hola, Joaquín</h1>
+          <p id="dyn-greeting-sub">Panel de Control Estratégico &bull; Grupo Broda</p>
+        </div>
+
+        <div class="top-controls-dock">
+          <div class="climate-toggle-dock">
+            <button class="btn-scene-toggle auto-btn" id="btn-scene-auto" onclick="autoDetectMendozaWeather(true)" title="Sincronizar en vivo con el clima actual de Mendoza">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              Auto Mendoza
+            </button>
+            <button class="btn-scene-toggle" id="btn-scene-day" onclick="setPortonesScene('day')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
+              Día
+            </button>
+            <button class="btn-scene-toggle" id="btn-scene-cloudy" onclick="setPortonesScene('cloudy')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+              Nube
+            </button>
+            <button class="btn-scene-toggle" id="btn-scene-night" onclick="setPortonesScene('night')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              Noche
+            </button>
+          </div>
+
+          <div class="clock-display-badge">
+            <div class="clock-value" id="clock-numeric-time">10:10 PM</div>
+            <div class="clock-sub">PORTONES PARQUE SAN MARTÍN &bull; MENDOZA</div>
+          </div>
+        </div>
+      </header>
+
+      <section id="pane-dashboard" class="view-container-pane active">
+        <div class="glass-cards-grid">
+          
+          <div class="glass-panel">
+            <div class="weather-widget-top">
+              <div>
+                <div id="weather-icon-symbol" style="color:#38bdf8;"></div>
+                <h2 class="weather-temp-heading" id="weather-temp-text">Cargando clima...</h2>
+                <p id="weather-condition-desc" style="color:var(--text-secondary); max-width:440px; font-size:0.92rem; line-height:1.45;">
+                  Sincronizando telemetría meteorológica de Mendoza...
+                </p>
+              </div>
+
+              <div class="air-quality-badge-box">
+                <span style="font-size:0.65rem; font-weight:700; color:var(--text-dim); letter-spacing:1px;">CALIDAD DE AIRE</span>
+                <span style="font-size:1.35rem; font-weight:800; font-family:var(--font-title);">Excelente</span>
+                <div class="air-bar-track"><div class="air-bar-fill"></div></div>
+              </div>
+            </div>
+
+            <div class="weather-metric-chips">
+              <div class="metric-chip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>
+                <span id="metric-wind-val">12 km/h</span>
+              </div>
+              <div class="metric-chip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                <span id="metric-hum-val">45% Humedad</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-panel">
+            <div class="panel-header-row">
+              <h3 class="panel-heading">Actividad Individual</h3>
+              <span style="color:#60a5fa; font-size:0.8rem; cursor:pointer;" onclick="switchMainPane('avance')">Ver más</span>
+            </div>
+            <div id="activity-tasks-feed" style="display:flex; flex-direction:column; gap:14px;"></div>
+          </div>
+
+          <div class="glass-panel">
+            <div class="panel-header-row">
+              <h3 class="panel-heading">Estado de Proyectos</h3>
+              <div style="display:flex; gap:8px;">
+                <span style="font-size:0.7rem; background:rgba(37,99,235,0.2); color:#93c5fd; padding:3px 9px; border-radius:12px; font-weight:700;">12 Activos</span>
+                <span style="font-size:0.7rem; background:rgba(5,150,105,0.2); color:#6ee7b7; padding:3px 9px; border-radius:12px; font-weight:700;">5 Finalizados</span>
+              </div>
+            </div>
+
+            <div class="project-meter-line">
+              <div class="meter-info"><span>Infraestructura Digital</span><span style="color:#60a5fa;">75%</span></div>
+              <div class="progress-bar-track"><div class="progress-bar-fill" style="width:75%; background:#2563eb;"></div></div>
+            </div>
+            <div class="project-meter-line">
+              <div class="meter-info"><span>Expansión Mendoza Norte</span><span style="color:#34d399;">40%</span></div>
+              <div class="progress-bar-track"><div class="progress-bar-fill" style="width:40%; background:#059669;"></div></div>
+            </div>
+            <div class="project-meter-line">
+              <div class="meter-info"><span>Smart Lighting Luján</span><span style="color:#f97316;">90%</span></div>
+              <div class="progress-bar-track"><div class="progress-bar-fill" style="width:90%; background:#ea580c;"></div></div>
+            </div>
+          </div>
+
+          <div class="glass-panel">
+            <div class="panel-header-row">
+              <h3 class="panel-heading">Nuevas Licitaciones</h3>
+              <span style="font-size:0.72rem; color:#38bdf8; font-weight:700; letter-spacing:0.5px;">FEED OFICIAL EN VIVO</span>
+            </div>
+            <div class="tenders-scroll-box" id="dashboard-tenders-list"></div>
+          </div>
+
+        </div>
+      </section>
+
+      <section id="pane-boletin" class="view-container-pane">
+        <div class="glass-panel">
+          <div class="panel-header-row">
+            <div>
+              <h3 class="panel-heading">Boletín Oficial de la Provincia de Mendoza</h3>
+              <p style="font-size:0.8rem; color:var(--text-muted);">Licitaciones públicas provinciales y decretos de obra pública.</p>
+            </div>
+            <button class="btn-exec-submit" style="width:auto; padding:8px 18px; font-size:0.82rem;" onclick="generateLiveTender('boletin')">+ Simular Nueva Publicación Oficial</button>
+          </div>
+          <div class="tenders-scroll-box" style="max-height:none;" id="boletin-tenders-feed"></div>
+        </div>
+      </section>
+
+      <section id="pane-municipalidad" class="view-container-pane">
+        <div class="glass-panel">
+          <div class="panel-header-row">
+            <div>
+              <h3 class="panel-heading">Municipalidad de la Ciudad de Mendoza</h3>
+              <p style="font-size:0.8rem; color:var(--text-muted);">Contrataciones urbanas, alumbrado inteligente y movilidad sustentable.</p>
+            </div>
+            <button class="btn-exec-submit" style="width:auto; padding:8px 18px; font-size:0.82rem;" onclick="generateLiveTender('muni')">+ Simular Pliego Municipal</button>
+          </div>
+          <div class="tenders-scroll-box" style="max-height:none;" id="municipalidad-tenders-feed"></div>
+        </div>
+      </section>
+
+      <section id="pane-teams" class="view-container-pane">
+        <div class="glass-panel">
+          <div class="panel-header-row">
+            <div>
+              <h3 class="panel-heading">Calendario Corporativo Microsoft Teams</h3>
+              <p style="font-size:0.8rem; color:var(--text-muted);">Sincronización directa mediante Microsoft Graph API para Grupo Broda.</p>
+            </div>
+            <button class="btn-exec-submit" style="width:auto; padding:8px 18px;" onclick="scheduleTeamsMeetingPrompt()">+ Agendar Reunión Teams</button>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;" id="teams-events-grid"></div>
+        </div>
+      </section>
+
+      <section id="pane-archivos" class="view-container-pane">
+        <div class="glass-panel">
+          <div class="panel-header-row">
+            <div>
+              <h3 class="panel-heading">Repositorio Documental y Base de Datos</h3>
+              <p style="font-size:0.8rem; color:var(--text-muted);">Actas de asamblea, estudios de impacto ambiental y matrices de pliegos.</p>
+            </div>
+            <label class="btn-exec-submit" style="width:auto; padding:8px 18px; cursor:pointer;">
+              Subir Archivo Real
+              <input type="file" style="display:none;" onchange="handleRealUpload(event)">
+            </label>
+          </div>
+          <div style="display:flex; gap:10px; margin-bottom:16px;">
+            <button class="btn-scene-toggle active" id="tab-doc-joaquin" onclick="switchDocTab('joaquin')">Joaquín Broda</button>
+            <button class="btn-scene-toggle" id="tab-doc-ron" onclick="switchDocTab('ron')">Ron Broda</button>
+            <button class="btn-scene-toggle" id="tab-doc-pamela" onclick="switchDocTab('pamela')">Pamela Moreno</button>
+            <button class="btn-scene-toggle" id="tab-doc-raul" onclick="switchDocTab('raul')">Raúl Sánchez</button>
+            <button class="btn-scene-toggle" id="tab-doc-agustina" onclick="switchDocTab('agustina')">Agustina Rossi</button>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px;" id="doc-files-list"></div>
+        </div>
+      </section>
+
+      <section id="pane-ai-chat" class="view-container-pane">
+        <div class="glass-panel" style="display:grid; grid-template-columns: 260px 1fr; gap:20px; height: calc(100vh - 130px); padding:20px;">
+          <div style="border-right: 1px solid var(--glass-border); padding-right:16px; display:flex; flex-direction:column; gap:10px;">
+            <div class="sidebar-category-tag" style="padding-left:0;">Salas de IA</div>
+            <button class="nav-btn active" onclick="switchAIChatRoom('global', this)">War Room Directorio</button>
+            <button class="nav-btn" onclick="switchAIChatRoom('ron', this)">Ron Broda (Obras)</button>
+            <button class="nav-btn" onclick="switchAIChatRoom('pamela', this)">Pamela (Tierras)</button>
+            <button class="nav-btn" onclick="switchAIChatRoom('raul', this)">Raúl (Smart City)</button>
+            <button class="nav-btn" onclick="switchAIChatRoom('agustina', this)">Agustina (Finanzas)</button>
+
+            <div style="margin-top:auto; padding-top:12px; border-top:1px solid var(--glass-border-subtle);">
+              <button class="btn-scene-toggle" style="width:100%; justify-content:center; background:rgba(37,99,235,0.15); color:#93c5fd;" onclick="openApiKeyConfigModal()">
+                Configurar API Key
+              </button>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; justify-content:space-between; height:100%;">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; border-bottom:1px solid var(--glass-border-subtle);">
+              <div>
+                <h4 id="ai-active-room-title" style="font-family:var(--font-title);">Directorio War Room &bull; Blue AI</h4>
+                <div style="font-size:0.75rem; color:var(--text-muted);" id="ai-engine-status">Motor: Groq / Claude Online</div>
+              </div>
+            </div>
+
+            <div id="ai-messages-feed" style="flex:1; overflow-y:auto; padding:18px 0; display:flex; flex-direction:column; gap:14px;"></div>
+
+            <div style="display:flex; gap:10px;">
+              <input type="text" id="ai-input-message" placeholder="Consulta sobre pliegos, presupuestos o avance de obras..." style="flex:1; padding:13px 18px; border-radius:24px; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); color:white; outline:none;" onkeydown="if(event.key==='Enter') sendAIExecutiveQuery()">
+              <button class="btn-exec-submit" style="width:auto; padding:13px 22px; border-radius:24px;" onclick="sendAIExecutiveQuery()">Consultar</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pane-proyectos" class="view-container-pane">
+        <div class="glass-panel">
+          <h3 class="panel-heading" style="margin-bottom:16px;">Portafolio Integral de Obras &bull; Provincia de Mendoza</h3>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div class="tender-item-strip"><div><strong>Polo Tecnológico Mendoza</strong><div style="font-size:0.8rem; color:var(--text-muted);">Smart City &bull; $142M &bull; Avance 78%</div></div><span style="color:#10b981; font-weight:700;">En Plazo</span></div>
+            <div class="tender-item-strip"><div><strong>Distrito Sustentable Norte</strong><div style="font-size:0.8rem; color:var(--text-muted);">Desarrollo Urbano &bull; $95M &bull; Avance 61%</div></div><span style="color:#60a5fa; font-weight:700;">En Ejecución</span></div>
+            <div class="tender-item-strip"><div><strong>Corredor Biocéanico Conectado</strong><div style="font-size:0.8rem; color:var(--text-muted);">Infraestructura Vial &bull; $210.5M &bull; Avance 89%</div></div><span style="color:#f97316; font-weight:700;">Fase Final</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pane-avance" class="view-container-pane">
+        <div class="glass-panel">
+          <h3 class="panel-heading">Métricas de Rendimiento Individual</h3>
+          <p style="color:var(--text-muted); font-size:0.85rem; margin:4px 0 18px;">Seguimiento por directivo de Grupo Broda.</p>
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;">
+            <div class="tender-item-strip" style="flex-direction:column; align-items:flex-start;"><div style="font-size:0.75rem; color:var(--text-dim);">EFICIENCIA GLOBAL</div><div style="font-size:1.8rem; font-weight:800; color:#10b981; margin:6px 0;">96.8%</div></div>
+            <div class="tender-item-strip" style="flex-direction:column; align-items:flex-start;"><div style="font-size:0.75rem; color:var(--text-dim);">HITOS VALIDADOS</div><div style="font-size:1.8rem; font-weight:800; color:#3b82f6; margin:6px 0;">38 / 40</div></div>
+            <div class="tender-item-strip" style="flex-direction:column; align-items:flex-start;"><div style="font-size:0.75rem; color:var(--text-dim);">HORAS BLUE TALKER</div><div style="font-size:1.8rem; font-weight:800; color:#0284c7; margin:6px 0;">64.2 h</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pane-correos" class="view-container-pane">
+        <div class="glass-panel">
+          <h3 class="panel-heading" style="margin-bottom:16px;">Bandeja de Entrada Corporativa</h3>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div class="tender-item-strip"><div><strong>Ministerio de Infraestructura</strong><div style="font-size:0.8rem; color:var(--text-muted);">Aprobación de pliegos técnicos Mendoza Norte</div></div><span style="font-size:0.75rem; color:var(--text-dim);">10:14 AM</span></div>
+            <div class="tender-item-strip"><div><strong>Raúl Sánchez (Smart City)</strong><div style="font-size:0.8rem; color:var(--text-muted);">Calibración de gateways en microcentro finalizada</div></div><span style="font-size:0.75rem; color:var(--text-dim);">09:30 AM</span></div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <button class="float-talker-trigger" title="BLUE TALKER: Traductor a Comandos Ejecutivos" onclick="openTalkerModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+    </button>
+  </div>
+
+  <div id="modal-blue-talker" class="modal-backdrop-veil" onclick="closeTalkerModal()">
+    <div class="modal-box-card" onclick="event.stopPropagation()">
+      <div class="bp-brand-header">
+        <div class="bp-circle-icon" style="width:36px; height:36px;">
+          <svg viewBox="0 0 24 24" style="width:20px; height:20px;"><path d="M12 4c0 0-4 4.5-4 9.5a4 4 0 0 0 8 0c0-5-4-9.5-4-9.5z" stroke-width="1.75"/><path d="M12 7v9" stroke-width="1.75"/></svg>
+        </div>
+        <div class="bp-brand-text" style="font-size: 1.5rem;"><span class="blue-part">blue</span><span class="green-part">talker</span></div>
+      </div>
+
+      <div>
+        <h3 style="font-family:var(--font-title); font-size:1.3rem;">Traductor de Conferencia a Comandos de Sistema</h3>
+        <p style="font-size:0.84rem; color:var(--text-muted); margin-top:4px;">
+          Escucha la reunión y traduce las conclusiones en instrucciones operativas para Teams, Licitaciones y Base de Datos.
+        </p>
+      </div>
+
+      <div class="waveform-visualizer">
+        <div class="wave-line"></div><div class="wave-line"></div><div class="wave-line"></div><div class="wave-line"></div><div class="wave-line"></div>
+      </div>
+
+      <div style="background:rgba(255,255,255,0.04); border:1px solid var(--glass-border); padding:14px 18px; border-radius:14px; font-size:0.9rem; min-height:60px;" id="live-transcription-box">
+        Presiona el micrófono para hablar o ejecuta una simulación ejecutiva...
+      </div>
+
+      <button id="btn-mic-exec" class="btn-exec-submit" style="background:#059669;" onclick="toggleMicrophoneListen()">
+        INICIAR ESCUCHA POR MICRÓFONO
+      </button>
+
+      <div>
+        <div style="font-size:0.7rem; color:var(--text-dim); font-weight:700; margin-bottom:6px;">SIMULACIÓN DE INSTRUCCIÓN ORAL:</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          <button class="btn-scene-toggle" style="background:rgba(255,255,255,0.06); font-size:0.75rem;" onclick="processVoiceOrder('Agendar reunión con Raúl de Smart City mañana a las 11 en Teams')">Agendar Teams mañana 11:00</button>
+          <button class="btn-scene-toggle" style="background:rgba(255,255,255,0.06); font-size:0.75rem;" onclick="processVoiceOrder('Guardar acta de asamblea: Aprobación de obra Luján de Cuyo')">Guardar Acta en Base de Datos</button>
+          <button class="btn-scene-toggle" style="background:rgba(255,255,255,0.06); font-size:0.75rem;" onclick="processVoiceOrder('Activar seguimiento de licitación de redes eléctricas')">Seguir Licitación Eléctrica</button>
+        </div>
+      </div>
+
+      <button class="btn-scene-toggle" style="align-self:center; color:var(--text-muted);" onclick="closeTalkerModal()">Cerrar Ventana</button>
+    </div>
+  </div>
+
+  <script>
+    const ENTERPRISE_PROFILES = {
+      joaquin: {
+        name: "Joaquín",
+        role: "Dueño Grupo Broda",
+        initials: "JB",
+        avatarBg: "#1d4ed8",
+        greeting: "Hola, Joaquín",
+        sub: "Panel de Control Estratégico &bull; Grupo Broda",
+        tasks: [
+          { title: "Validación de certificación pliego Luján", time: "Hace 20 min", color: "#3b82f6" },
+          { title: "Resolución Mendoza Norte aprobada por directorio", time: "Hace 2 horas", color: "#10b981" },
+          { title: "Auditoría presupuestaria Corredor Bioceánico", time: "Hoy, 9:00 AM", color: "#ea580c" }
+        ]
+      },
+      ron: {
+        name: "Ron Broda",
+        role: "Project Manager",
+        initials: "RB",
+        avatarBg: "#059669",
+        greeting: "Buen día, Ron",
+        sub: "Supervisión de obras de infraestructura",
+        tasks: [
+          { title: "Hito Corredor Bioceánico: Entrega vial", time: "Vence mañana", color: "#3b82f6" },
+          { title: "Inspección técnica de obra en Luján", time: "Hace 1 hora", color: "#10b981" }
+        ]
+      },
+      pamela: {
+        name: "Pamela",
+        role: "Bienes Raíces",
+        initials: "PM",
+        avatarBg: "#9333ea",
+        greeting: "Bienvenida, Pamela",
+        sub: "Desarrollo territorial Distrito Sustentable Norte",
+        tasks: [
+          { title: "Tasación de lotes Mendoza Norte etapa 2", time: "Hace 30 min", color: "#10b981" },
+          { title: "Revisión catastral con Dirección Provincial", time: "Hoy 14:00", color: "#3b82f6" }
+        ]
+      },
+      raul: {
+        name: "Raúl",
+        role: "Project Manager Smart City",
+        initials: "RA",
+        avatarBg: "#ea580c",
+        greeting: "Qué tal, Raúl",
+        sub: "Red de telegestión y alumbrado urbano",
+        tasks: [
+          { title: "Verificación de enlaces de telemetría", time: "Hace 15 min", color: "#3b82f6" },
+          { title: "Reporte de calidad ambiental: Óptimo", time: "Completado", color: "#10b981" }
+        ]
+      },
+      agustina: {
+        name: "Agustina",
+        role: "Analista de Proyectos",
+        initials: "AG",
+        avatarBg: "#0284c7",
+        greeting: "Hola, Agustina",
+        sub: "Auditoría y cálculo de márgenes en contrataciones",
+        tasks: [
+          { title: "Auditoría de pliego cámaras inteligentes", time: "Hace 10 min", color: "#3b82f6" },
+          { title: "Cálculo de TIR en licitaciones eléctricas", time: "Aprobado", color: "#10b981" }
+        ]
+      }
+    };
+
+    let activeUserKey = "joaquin";
+    let BOLETIN_TENDERS = [];
+    let MUNICIPAL_TENDERS = [];
+
+    let TEAMS_MEETINGS = [
+      { id: 1, title: "Revisión Smart City Team", time: "En 45 min &bull; 11:00 AM", members: "Raúl Sánchez, Pamela Moreno, Joaquín Broda", link: "https://teams.microsoft.com" },
+      { id: 2, title: "Comité de Licitaciones Mendoza", time: "Hoy &bull; 15:30 PM", members: "Agustina Rossi, Ron Broda", link: "https://teams.microsoft.com" },
+      { id: 3, title: "Directorio Estratégico Grupo Broda", time: "Mañana &bull; 10:00 AM", members: "Directorio General", link: "https://teams.microsoft.com" }
+    ];
+
+    let REPO_FILES = {
+      joaquin: [
+        { name: "Acta_Directorio_Broda_2026.pdf", size: "1.8 MB", date: "Hoy 10:30", by: "Joaquín Broda" },
+        { name: "Balance_General_BluePlanet_Consolidado.xlsx", size: "3.4 MB", date: "Ayer", by: "Joaquín Broda" }
+      ],
+      ron: [
+        { name: "Pliego_Vial_Corredor_Bioceanico.pdf", size: "8.2 MB", date: "Hoy 09:15", by: "Ron Broda" },
+        { name: "Cronograma_Maestro_Lujan_Cuyo.xlsx", size: "2.1 MB", date: "24 Oct", by: "Ron Broda" }
+      ],
+      pamela: [{ name: "Plano_Mensura_Mendoza_Norte.dwg", size: "14.5 MB", date: "26 Oct", by: "Pamela Moreno" }],
+      raul: [{ name: "Topologia_Gateways_IoT_Mendoza.json", size: "540 KB", date: "Hoy 08:00", by: "Raúl Sánchez" }],
+      agustina: [{ name: "Matriz_Comparativa_Licitaciones_Boletin.xlsx", size: "2.8 MB", date: "Hoy 11:00", by: "Agustina Rossi" }]
+    };
+    let currentDocTab = "joaquin";
+
+    const AI_CHATS = {
+      global: [{ sender: "Blue AI", text: "Directorio en línea. Pliegos de Mendoza auditados con margen favorable para Grupo Broda.", isAi: true }],
+      ron: [{ sender: "Blue AI", text: "Ron, la certificación ambiental del Corredor Bioceánico está lista para presentación.", isAi: true }],
+      pamela: [{ sender: "Blue AI", text: "Pamela, las cotizaciones por metro cuadrado de Mendoza Norte arrojaron un incremento del 14%.", isAi: true }],
+      raul: [{ sender: "Blue AI", text: "Raúl, el protocolo de telemetría de luminarias fue validado a 100%.", isAi: true }],
+      agustina: [{ sender: "Blue AI", text: "Agustina, la licitación eléctrica tiene una tasa interna de retorno estimada en 29.4%.", isAi: true }]
+    };
+    let activeAIRoom = "global";
+    let customApiKey = localStorage.getItem("bp_api_key") || "";
+
+    const PORTONES_SCENES = {
+      night: {
+        temp: "Despejado con 18°C",
+        desc: "Condiciones nocturnas sobre los Portones del Parque San Martín. Sistema de control operando con normalidad.",
+        wind: "12 km/h",
+        hum: "45% Humedad",
+        targetBg: "mendoza-bg-night",
+        iconSvg: '<svg viewBox="0 0 24 24" style="width:32px;height:32px;fill:none;stroke:currentColor;stroke-width:1.75;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+      },
+      day: {
+        temp: "Soleado con 28°C",
+        desc: "Jornada soleada sobre el Parque General San Martín y la cordillera de Mendoza. Todos los frentes de obra activos.",
+        wind: "14 km/h",
+        hum: "32% Humedad",
+        targetBg: "mendoza-bg-day",
+        iconSvg: '<svg viewBox="0 0 24 24" style="width:32px;height:32px;fill:none;stroke:currentColor;stroke-width:1.75;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>'
+      },
+      cloudy: {
+        temp: "Nublado con 22°C",
+        desc: "Cielo cubierto sobre los Portones del Parque y la precordillera andina. Operaciones de campo en ritmo regular.",
+        wind: "16 km/h",
+        hum: "55% Humedad",
+        targetBg: "mendoza-bg-cloudy",
+        iconSvg: '<svg viewBox="0 0 24 24" style="width:32px;height:32px;fill:none;stroke:currentColor;stroke-width:1.75;"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>'
+      }
+    };
+
+    /* CONEXIÓN DIRECTA CON data/licitaciones.json */
+    async function loadLicitacionesFromData() {
+      try {
+        const res = await fetch('data/licitaciones.json');
+        if (res.ok) {
+          const data = await res.json();
+          BOLETIN_TENDERS = data.licitaciones.filter(l => l.origen === 'boletin');
+          MUNICIPAL_TENDERS = data.licitaciones.filter(l => l.origen === 'municipalidad');
+          renderTendersEngine();
+          triggerSystemToast("Licitaciones", "Datos sincronizados desde data/licitaciones.json");
+          return;
+        }
+      } catch (e) {
+        console.warn("Cargando lista base de contingencia...");
+      }
+
+      // Respaldo por si se abre localmente sin servidor
+      BOLETIN_TENDERS = [
+        { id: "lic-bol-101", code: "LIC-2026-MZA-0418", title: "Mantenimiento Integral de Redes Eléctricas", budget: "$12.5M", deadline: "3 días", followed: false },
+        { id: "lic-bol-102", code: "LIC-2026-MZA-0391", title: "Modernización Energética y Paneles Solares", budget: "$82.8M", deadline: "18 días", followed: true }
+      ];
+      MUNICIPAL_TENDERS = [
+        { id: "lic-mun-201", code: "MUN-CIUDAD-2026-088", title: "Plataforma de Monitoreo Urbano y Cámaras", budget: "$45.0M", deadline: "12 días", followed: false },
+        { id: "lic-mun-202", code: "COMPRAR-MZA-2026-042", title: "Telegestión de Alumbrado Parque San Martín", budget: "$18.4M", deadline: "5 días", followed: false }
+      ];
+      renderTendersEngine();
+    }
+
+    async function autoDetectMendozaWeather(isUserClick = false) {
+      try {
+        const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=-32.8908&longitude=-68.8272&current=temperature_2m,relative_humidity_2m,is_day,precipitation,weather_code,wind_speed_10m&timezone=America%2FArgentina%2FMendoza");
+        const data = await res.json();
+        if (data && data.current) {
+          const c = data.current;
+          const temp = Math.round(c.temperature_2m);
+          const wind = `${Math.round(c.wind_speed_10m)} km/h`;
+          const hum = `${Math.round(c.relative_humidity_2m)}% Humedad`;
+          const isDay = c.is_day === 1;
+          const code = c.weather_code;
+
+          let mode = 'day';
+          if (!isDay) {
+            mode = 'night';
+          } else if (code >= 3 || c.precipitation > 0) {
+            mode = 'cloudy';
+          } else {
+            mode = 'day';
+          }
+
+          setPortonesScene(mode, {
+            temp: `${mode === 'night' ? 'Despejado' : (mode === 'cloudy' ? 'Nublado' : 'Soleado')} con ${temp}°C`,
+            wind,
+            hum,
+            desc: `Telemetría en tiempo real desde Mendoza (${temp}°C, ${wind}, ${hum}).`
+          });
+
+          if (isUserClick) {
+            triggerSystemToast("Clima Automático", `Mendoza sincronizada: modo ${mode.toUpperCase()} (${temp}°C).`);
+          }
+          return;
+        }
+      } catch (err) {
+        console.warn("Fallo en Open-Meteo, calculando por huso horario de Mendoza");
+      }
+
+      const mendozaHourStr = new Date().toLocaleString("en-US", { timeZone: "America/Argentina/Mendoza", hour: 'numeric', hour12: false });
+      const hour = parseInt(mendozaHourStr, 10);
+      if (hour >= 20 || hour < 7) {
+        setPortonesScene('night');
+      } else {
+        setPortonesScene('day');
+      }
+    }
+
+    function enterSystemStage() {
+      document.getElementById("intro-welcome-card").classList.add("exit");
+      const earth = document.getElementById("earth-actor-box");
+      earth.classList.remove("pos-intro");
+      earth.classList.add("pos-login");
+      setTimeout(() => document.getElementById("login-form-panel").classList.add("visible"), 350);
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const sel = document.getElementById("user-select-field").value;
+      setUserSession(sel);
+      document.getElementById("view-login").classList.add("hidden");
+      setTimeout(() => document.getElementById("view-dashboard").classList.add("active"), 300);
+      triggerSystemToast("Sesión Concedida", `Acceso corporativo validado para ${ENTERPRISE_PROFILES[sel].name}.`);
+    }
+
+    function setUserSession(key) {
+      activeUserKey = key;
+      const u = ENTERPRISE_PROFILES[key];
+      document.getElementById("dyn-greeting-title").textContent = u.greeting;
+      document.getElementById("dyn-greeting-sub").innerHTML = u.sub;
+      document.getElementById("user-display-name").textContent = u.name;
+      document.getElementById("user-display-role").textContent = u.role;
+      const av = document.getElementById("avatar-circle-display");
+      av.textContent = u.initials;
+      av.style.background = u.avatarBg;
+
+      const taskFeed = document.getElementById("activity-tasks-feed");
+      taskFeed.innerHTML = u.tasks.map(t => `
+        <div style="display:flex; align-items:flex-start; gap:10px;">
+          <div style="width:4px; height:34px; border-radius:4px; background:${t.color}; flex-shrink:0;"></div>
+          <div>
+            <div style="font-size:0.88rem; font-weight:600;">${t.title}</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">${t.time}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openUserSelectionPrompt() {
+      const chosen = prompt("Cambiar directivo:\n1. joaquin\n2. ron\n3. pamela\n4. raul\n5. agustina", activeUserKey);
+      if (chosen && ENTERPRISE_PROFILES[chosen.toLowerCase()]) {
+        setUserSession(chosen.toLowerCase());
+      }
+    }
+
+    function setPortonesScene(key, customData = null) {
+      const scene = PORTONES_SCENES[key];
+      document.querySelectorAll(".btn-scene-toggle").forEach(b => b.classList.remove("active"));
+      const activeBtn = document.getElementById(`btn-scene-${key}`);
+      if (activeBtn) activeBtn.classList.add("active");
+
+      document.querySelectorAll(".bg-mendoza-layer").forEach(bg => bg.style.opacity = "0");
+      document.getElementById(scene.targetBg).style.opacity = "1";
+
+      document.getElementById("weather-icon-symbol").innerHTML = scene.iconSvg;
+      document.getElementById("weather-temp-text").textContent = customData ? customData.temp : scene.temp;
+      document.getElementById("weather-condition-desc").textContent = customData ? customData.desc : scene.desc;
+      document.getElementById("metric-wind-val").textContent = customData ? customData.wind : scene.wind;
+      document.getElementById("metric-hum-val").textContent = customData ? customData.hum : scene.hum;
+    }
+
+    function renderTendersEngine() {
+      const combined = [...BOLETIN_TENDERS, ...MUNICIPAL_TENDERS];
+      const dashList = document.getElementById("dashboard-tenders-list");
+      dashList.innerHTML = combined.map(t => createTenderStrip(t)).join('');
+
+      const bolFeed = document.getElementById("boletin-tenders-feed");
+      bolFeed.innerHTML = BOLETIN_TENDERS.map(t => createTenderStrip(t)).join('');
+      document.getElementById("boletin-count-badge").textContent = BOLETIN_TENDERS.length;
+
+      const munFeed = document.getElementById("municipalidad-tenders-feed");
+      munFeed.innerHTML = MUNICIPAL_TENDERS.map(t => createTenderStrip(t)).join('');
+      document.getElementById("muni-count-badge").textContent = MUNICIPAL_TENDERS.length;
+    }
+
+    function createTenderStrip(t) {
+      return `
+        <div class="tender-item-strip" id="t-strip-${t.id}">
+          <div>
+            <div style="font-weight:600; font-size:0.9rem;">${t.title}</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+              ${t.code} &bull; ${t.budget} &bull; Vence en ${t.deadline}
+            </div>
+          </div>
+          <div style="display:flex; gap:6px;">
+            <button class="action-icon-btn ${t.followed ? 'active-follow' : ''}" title="${t.followed ? 'En Seguimiento' : 'Seguir'}" onclick="toggleTenderTracking('${t.id}')">
+              <svg viewBox="0 0 24 24" fill="${t.followed ? 'currentColor' : 'none'}" stroke="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </button>
+            <button class="action-icon-btn dismiss-btn" title="Descartar" onclick="dismissTenderAction('${t.id}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function toggleTenderTracking(id) {
+      let t = BOLETIN_TENDERS.find(x => x.id === id) || MUNICIPAL_TENDERS.find(x => x.id === id);
+      if (t) {
+        t.followed = !t.followed;
+        renderTendersEngine();
+        triggerSystemToast("Licitación", t.followed ? `Siguiendo: ${t.code}` : `Seguimiento retirado de: ${t.code}`);
+      }
+    }
+
+    function dismissTenderAction(id) {
+      BOLETIN_TENDERS = BOLETIN_TENDERS.filter(x => x.id !== id);
+      MUNICIPAL_TENDERS = MUNICIPAL_TENDERS.filter(x => x.id !== id);
+      renderTendersEngine();
+      triggerSystemToast("Licitación Descartada", "El pliego fue retirado del flujo activo.");
+    }
+
+    function generateLiveTender(type) {
+      const randId = Math.floor(100 + Math.random() * 900);
+      if (type === 'boletin') {
+        BOLETIN_TENDERS.unshift({
+          id: `lic-bol-${Date.now()}`,
+          code: `LIC-2026-MZA-${randId}`,
+          title: "Provisión de Fibra Óptica para Red Vial Andina",
+          budget: `$${(Math.random()*40 + 10).toFixed(1)}M`,
+          deadline: "10 días",
+          followed: false
+        });
+        triggerSystemToast("Boletín Oficial", `Nueva publicación: LIC-2026-MZA-${randId}`);
+      } else {
+        MUNICIPAL_TENDERS.unshift({
+          id: `lic-mun-${Date.now()}`,
+          code: `MUN-CIUDAD-2026-${randId}`,
+          title: "Renovación Telemétrica de Luminarias Plaza Independencia",
+          budget: `$${(Math.random()*25 + 5).toFixed(1)}M`,
+          deadline: "7 días",
+          followed: false
+        });
+        triggerSystemToast("Municipalidad", `Nuevo pliego: MUN-CIUDAD-2026-${randId}`);
+      }
+      renderTendersEngine();
+    }
+
+    function renderTeamsBoard() {
+      const grid = document.getElementById("teams-events-grid");
+      grid.innerHTML = TEAMS_MEETINGS.map(m => `
+        <div class="tender-item-strip" style="flex-direction:column; align-items:flex-start; padding:16px;">
+          <span style="font-size:0.7rem; background:#1e40af; color:#dbeafe; padding:2px 8px; border-radius:10px; font-weight:700;">${m.time}</span>
+          <div style="font-weight:700; margin:10px 0 4px; font-family:var(--font-title);">${m.title}</div>
+          <div style="font-size:0.78rem; color:var(--text-muted);">${m.members}</div>
+          <button class="btn-exec-submit" style="margin-top:14px; padding:8px 14px; font-size:0.8rem; background:#1e3a8a;" onclick="window.open('${m.link}', '_blank')">Unirse por Teams</button>
+        </div>
+      `).join('');
+    }
+
+    function scheduleTeamsMeetingPrompt() {
+      const subject = prompt("Asunto de la reunión en Microsoft Teams:", "Comité de Obras Luján de Cuyo");
+      if (subject) {
+        TEAMS_MEETINGS.unshift({
+          id: Date.now(),
+          title: subject,
+          time: "Hoy &bull; En 20 min",
+          members: "Joaquín Broda, Ron Broda, Raúl Sánchez",
+          link: "https://teams.microsoft.com"
+        });
+        renderTeamsBoard();
+        triggerSystemToast("Microsoft Teams", `Reunión agendada: "${subject}"`);
+      }
+    }
+
+    function switchDocTab(memberKey) {
+      currentDocTab = memberKey;
+      document.querySelectorAll("[id^='tab-doc-']").forEach(b => b.classList.remove("active"));
+      const btn = document.getElementById(`tab-doc-${memberKey}`);
+      if (btn) btn.classList.add("active");
+      renderDocRepository();
+    }
+
+    function renderDocRepository() {
+      const list = document.getElementById("doc-files-list");
+      const files = REPO_FILES[currentDocTab] || [];
+      if (files.length === 0) {
+        list.innerHTML = `<div style="text-align:center; padding:18px; color:var(--text-dim);">No hay documentos registrados para este miembro.</div>`;
+        return;
+      }
+      list.innerHTML = files.map(f => `
+        <div class="tender-item-strip">
+          <div>
+            <div style="font-weight:600; font-size:0.88rem;">${f.name}</div>
+            <div style="font-size:0.74rem; color:var(--text-muted);">${f.size} &bull; ${f.date} &bull; Responsable: ${f.by}</div>
+          </div>
+          <button class="btn-exec-submit" style="width:auto; padding:6px 14px; font-size:0.78rem;" onclick="alert('Descargando archivo: ${f.name}')">Descargar</button>
+        </div>
+      `).join('');
+    }
+
+    function handleRealUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        REPO_FILES[currentDocTab].unshift({
+          name: file.name,
+          size: `${(file.size / (1024*1024)).toFixed(1)} MB`,
+          date: "Recién cargado",
+          by: ENTERPRISE_PROFILES[activeUserKey].name
+        });
+        renderDocRepository();
+        triggerSystemToast("Base de Datos", `Archivo "${file.name}" sincronizado con éxito.`);
+      }
+    }
+
+    let recognitionObj = null;
+    let micRunning = false;
+
+    function openTalkerModal() {
+      document.getElementById("modal-blue-talker").classList.add("active");
+    }
+
+    function closeTalkerModal() {
+      if (recognitionObj && micRunning) recognitionObj.stop();
+      document.getElementById("modal-blue-talker").classList.remove("active");
+    }
+
+    function toggleMicrophoneListen() {
+      const btn = document.getElementById("btn-mic-exec");
+      const box = document.getElementById("live-transcription-box");
+
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert("El navegador no soporta Web Speech API. Usa los botones de simulación.");
+        return;
+      }
+
+      if (micRunning) {
+        recognitionObj.stop();
+        micRunning = false;
+        btn.textContent = "INICIAR ESCUCHA POR MICRÓFONO";
+        btn.style.background = "#059669";
+        return;
+      }
+
+      const SpeechClass = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognitionObj = new SpeechClass();
+      recognitionObj.lang = 'es-AR';
+      recognitionObj.continuous = true;
+      recognitionObj.interimResults = true;
+
+      recognitionObj.onstart = () => {
+        micRunning = true;
+        btn.textContent = "DETENER ESCUCHA (GRABANDO)";
+        btn.style.background = "#dc2626";
+        box.textContent = "Conferencia activa: escuchando y analizando intenciones ejecutivas...";
+      };
+
+      recognitionObj.onresult = (evt) => {
+        let transcript = "";
+        for (let i = evt.resultIndex; i < evt.results.length; ++i) {
+          transcript += evt.results[i][0].transcript;
+        }
+        box.textContent = `"${transcript}"`;
+        processVoiceOrder(transcript);
+      };
+
+      recognitionObj.start();
+    }
+
+    function processVoiceOrder(phrase) {
+      document.getElementById("live-transcription-box").textContent = `"${phrase}"`;
+      const lower = phrase.toLowerCase();
+
+      if (lower.includes("agendar") || lower.includes("reunión") || lower.includes("teams")) {
+        TEAMS_MEETINGS.unshift({
+          id: Date.now(),
+          title: "Instrucción de Conferencia (Blue Talker)",
+          time: "Mañana &bull; 11:00 AM",
+          members: "Joaquín Broda, Raúl Sánchez, Ron Broda",
+          link: "https://teams.microsoft.com"
+        });
+        renderTeamsBoard();
+        triggerSystemToast("BLUE TALKER", "[COMANDO: AGENDA_TEAMS] Reunión programada en Teams.");
+      } else if (lower.includes("guardar") || lower.includes("acta")) {
+        REPO_FILES[activeUserKey].unshift({
+          name: `Acta_Ejecutiva_${Date.now().toString().slice(-4)}.pdf`,
+          size: "420 KB",
+          date: "Generado por Voz",
+          by: ENTERPRISE_PROFILES[activeUserKey].name
+        });
+        renderDocRepository();
+        triggerSystemToast("BLUE TALKER", "[COMANDO: DATABASE_SAVE] Documento archivado en Repositorio.");
+      } else if (lower.includes("seguir") || lower.includes("licitaci")) {
+        BOLETIN_TENDERS[0].followed = true;
+        renderTendersEngine();
+        triggerSystemToast("BLUE TALKER", "[COMANDO: TRACK_TENDER] Licitación colocada en seguimiento.");
+      }
+    }
+
+    function switchAIChatRoom(key, btn) {
+      activeAIRoom = key;
+      document.querySelectorAll("#pane-ai-chat .nav-btn").forEach(b => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+
+      const title = document.getElementById("ai-active-room-title");
+      if (key === 'global') {
+        title.textContent = "Directorio War Room • Blue AI";
+      } else {
+        title.textContent = `Canal Directo con ${ENTERPRISE_PROFILES[key].name}`;
+      }
+      renderAIMessages();
+    }
+
+    function renderAIMessages() {
+      const container = document.getElementById("ai-messages-feed");
+      const list = AI_CHATS[activeAIRoom] || [];
+      container.innerHTML = list.map(m => `
+        <div style="max-width:75%; padding:12px 16px; border-radius:14px; font-size:0.88rem; line-height:1.5; align-self:${m.isAi ? 'flex-start' : 'flex-end'}; background:${m.isAi ? 'rgba(255,255,255,0.06)' : '#1d4ed8'}; border:${m.isAi ? '1px solid var(--glass-border-subtle)' : 'none'};">
+          <div style="font-size:0.7rem; font-weight:700; color:${m.isAi ? '#38bdf8' : '#ffffff'}; margin-bottom:3px;">${m.sender}</div>
+          <div>${m.text}</div>
+        </div>
+      `).join('');
+      container.scrollTop = container.scrollHeight;
+    }
+
+    async function sendAIExecutiveQuery() {
+      const input = document.getElementById("ai-input-message");
+      const q = input.value.trim();
+      if (!q) return;
+
+      const user = ENTERPRISE_PROFILES[activeUserKey];
+      AI_CHATS[activeAIRoom].push({ sender: user.name, text: q, isAi: false });
+      input.value = "";
+      renderAIMessages();
+
+      if (customApiKey) {
+        try {
+          const resp = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${customApiKey}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              model: "llama-3.3-70b-versatile",
+              messages: [
+                { role: "system", content: "Eres Blue AI, asesor estratégico corporativo de Grupo Broda y BluePlanet en Mendoza. Sé riguroso, formal y ejecutivo." },
+                { role: "user", content: q }
+              ]
+            })
+          });
+          const data = await resp.json();
+          if (data.choices && data.choices[0]) {
+            AI_CHATS[activeAIRoom].push({ sender: "Blue AI (Groq Llama-3)", text: data.choices[0].message.content, isAi: true });
+            renderAIMessages();
+            return;
+          }
+        } catch (err) {
+          console.warn("API Error, fallback a motor local:", err);
+        }
+      }
+
+      setTimeout(() => {
+        let reply = `Consulta analizada para el sector de ${user.role}. Los indicadores de rentabilidad y cumplimiento en Mendoza se encuentran dentro del rango del 85-95%.`;
+        if (q.toLowerCase().includes("licitaci") || q.toLowerCase().includes("pliego")) {
+          reply = "Evaluación de pliegos: La licitación de redes eléctricas ($12.5M) del Boletín Oficial presenta un margen operativo proyectado del 28.5%.";
+        }
+        AI_CHATS[activeAIRoom].push({ sender: "Blue AI", text: reply, isAi: true });
+        renderAIMessages();
+      }, 600);
+    }
+
+    function openApiKeyConfigModal() {
+      const key = prompt("Configuración de API Key para inferencia en la nube (Groq o Claude):\nIntroduce tu clave para análisis LLM sin restricciones:", customApiKey);
+      if (key !== null) {
+        customApiKey = key.trim();
+        localStorage.setItem("bp_api_key", customApiKey);
+        document.getElementById("ai-engine-status").textContent = customApiKey ? "Motor: Groq Llama-3 Conectado" : "Motor: Local Offline";
+        triggerSystemToast("Configuración", customApiKey ? "API Key guardada exitosamente." : "Modo motor local activado.");
+      }
+    }
+
+    function triggerSystemToast(title, body) {
+      const t = document.getElementById("live-toast-box");
+      document.getElementById("toast-title-text").textContent = title;
+      document.getElementById("toast-body-text").textContent = body;
+      t.classList.add("active");
+      setTimeout(() => t.classList.remove("active"), 3500);
+    }
+
+    function switchMainPane(paneId, btn) {
+      if (btn) {
+        document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+      }
+      document.querySelectorAll(".view-container-pane").forEach(v => v.classList.remove("active"));
+      const p = document.getElementById(`pane-${paneId}`);
+      if (p) p.classList.add("active");
+    }
+
+    function updateLiveClock() {
+      const d = new Date();
+      let h = d.getHours();
+      const m = String(d.getMinutes()).padStart(2, '0');
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12 || 12;
+      document.getElementById("clock-numeric-time").textContent = `${h}:${m} ${ampm}`;
+    }
+    setInterval(updateLiveClock, 1000);
+    updateLiveClock();
+
+    window.addEventListener("DOMContentLoaded", () => {
+      setUserSession("joaquin");
+      loadLicitacionesFromData();
+      renderTeamsBoard();
+      renderDocRepository();
+      renderAIMessages();
+      autoDetectMendozaWeather(false);
+      if (customApiKey) {
+        document.getElementById("ai-engine-status").textContent = "Motor: Groq Llama-3 Conectado";
+      }
+    });
+  </script>
+</body>
+</html>
